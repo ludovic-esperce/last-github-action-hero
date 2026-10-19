@@ -119,7 +119,7 @@ export default function App() {
           <cite>- MadmovOps</cite>
         </p>
         <p className="quote">
-          ★★★★ &quot;Jamais vu un cycle rouge/vers/refactor aussi intense !&quot;
+          ★★★★ &quot;Jamais vu un cycle rouge/vert/refactor aussi intense !&quot;
           <cite>- Christopher Gitpush</cite>
         </p>
         <p className="quote">
