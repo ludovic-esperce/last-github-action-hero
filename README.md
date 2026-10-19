@@ -1,5 +1,6 @@
 # Last GitHub Action Hero
 
+![Logo Last Gihub Action Hero](git-assets/last-github-action-hero.svg)
 Atelier de découverte de GitHub Actions.
 
 ## Pipeline
