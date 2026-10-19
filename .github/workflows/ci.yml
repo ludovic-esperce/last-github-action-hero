@@ -1,4 +1,4 @@
-name: CI - Test, build, report.
+name: CI - Test, build, report, overcome
 
 # Trigger : l'événement qui déclenche le pipeline
 on:
@@ -15,9 +15,8 @@ jobs:
   # Les étapes partagent le même disque
   ci: # Nom du job
     runs-on: ubuntu-26.04 # Machine "ubuntu" fournie par Github
-    environment: last-action-hero
-    env: # Paramétrage des informations pour envoie d'email
-      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    env: # Paramétrage de variables d'environnement utilisables dans le workflow
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }} # On récupère les secrets Github
     steps:
       - uses: actions/checkout@v4 # Récupération du code
       - uses: actions/setup-node@v4 # Configuration de NodeJS
