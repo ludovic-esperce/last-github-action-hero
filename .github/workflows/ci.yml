@@ -1,0 +1,95 @@
+name: CI - Test, build, report.
+
+# Trigger : l'événement qui déclenche le pipeline
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Un JOB se déroule sur une machine spécifique
+  # Les étapes partagent le même disque 
+  ci: # Nom du job
+    runs-on: ubuntu-latest # Machine "ubuntu" fournie par Github
+    env: # Paramétrage des informations pour envoie d'email
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4 # Récupération du code
+      - uses: actions/setup-node@v4 # Configuration de NodeJS
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Die Hard : vérification statique
+      - id: lint
+        name: Die Hard - Vérification statique - Lint
+        run: npm run lint
+
+      # Terminator : tests unitaires
+      - id: test
+        name: Tests unitaires
+        if: ${{ !cancelled() }}
+        run: npm test
+
+      # Commando : build (seulement si lint et tests sont verts)
+      - id: build
+        name: Build
+        run: npm run build
+        env:
+          VITE_COMMIT: ${{ github.sha }}
+
+      # Le site construit est transmis au workflow CD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          retention-days: 3
+
+      # Générique de fin : résumé affiché sur la page du run
+      - name: Générique de fin
+        if: always()
+        env:
+          LINT: ${{ steps.lint.outcome }}
+          TEST: ${{ steps.test.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+        run: |
+          icon() { case "$1" in success) echo "OK";; skipped) echo "Continue";; *) echo "Failed";; esac; }
+          {
+            echo "## Générique de fin : CI"
+            echo ""
+            echo "| Rôle | Mission | Résultat |"
+            echo "|---|---|---|"
+            echo "| Die Hard | Vérification statique | $(icon "$LINT") |"
+            echo "| Terminator | Tests unitaires | $(icon "$TEST") |"
+            echo "| Commando | Build | $(icon "$BUILD") |"
+            echo ""
+            echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Email de fin de build (ignoré si les secrets Gmail ne sont pas configurés)
+      - name: Envoyer l'email
+        if: always() && env.MAIL_PASSWORD != ''
+        uses: dawidd6/action-send-mail@v6
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: "Last GitHub Action Hero <${{ secrets.MAIL_USERNAME }}>"
+          subject: "CI ${{ job.status }} : ${{ github.repository }}"
+          body: |
+            Le build de ${{ github.repository }} est terminé.
+
+            Résultat : ${{ job.status }}
+            Branche  : ${{ github.ref_name }}
+            Commit   : ${{ github.sha }}
+            Auteur   : ${{ github.actor }}
+
+            Détails : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
