@@ -14,7 +14,7 @@ jobs:
   # Un JOB se déroule sur une machine spécifique
   # Les étapes partagent le même disque 
   ci: # Nom du job
-    runs-on: ubuntu-latest # Machine "ubuntu" fournie par Github
+    runs-on: ubuntu-26.04 # Machine "ubuntu" fournie par Github
     env: # Paramétrage des informations pour envoie d'email
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
