@@ -1,6 +1,8 @@
 ![Logo Last Gihub Action Hero](git-assets/last-github-action-hero.svg)
 
-Atelier de découverte de GitHub Actions.
+Atelier de découverte de GitHub Actions ! Yippee kikay!
+
+![Gif awesome action](git-assets/awesome-action.gif)
 
 ## Pipeline
 
