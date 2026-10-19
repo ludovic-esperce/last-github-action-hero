@@ -24,7 +24,7 @@ L'envoi d'email peut s'effectuer en utilisant un serveru `SMTP`, dans cet exempl
 
 Afin que l'action Github puisse se connecter au serveur il faudra ajouter des `secrets` :
 
-![Ajout de secrets Github](git-assets/toto/add-github-repository-secret.gif)
+![Ajout de secrets Github](git-assets/add-github-repository-secret.gif)
 
 Il faudra ajouter 3 secrets utilisés par le workflow :
 - `MAIL_USERNAME` : nom de l'utilisateur utilisé pour l'envoi d'email
@@ -35,7 +35,7 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 
 Pour que le déploiement puisse se faire il faut veiller à activer les `Github Pages` pour le dépôt :
 
-![Activation Github pages](git-assets/todo/activate-github-page.gif)
+![Activation Github pages](git-assets/activate-github-page.gif)
 
 Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pages`](https://github.com/marketplace/actions/deploy-github-pages-site) en effectuant un téléchargement de `l'artefact`.
 
