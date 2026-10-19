@@ -15,6 +15,7 @@ jobs:
   # Les étapes partagent le même disque
   ci: # Nom du job
     runs-on: ubuntu-26.04 # Machine "ubuntu" fournie par Github
+    environment: last-action-hero
     env: # Paramétrage des informations pour envoie d'email
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
