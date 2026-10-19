@@ -106,11 +106,8 @@ jobs:
   # Déploiement sur GitHub Pages, uniquement si la CI est OKAY
   # L'application n'est pas rebuild : on récupère celle de la CI
   deploy:
-    # if: >-
-    #   github.event.workflow_run.conclusion == 'success' &&
-    #   contains(fromJSON('["push","workflow_dispatch"]'), github.event.workflow_run.event)
     needs : ci
-    if: github.event_name != 'pull_request' && github.ref = 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -127,8 +124,6 @@ jobs:
         with:
           name: site
           path: dist
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -142,17 +137,17 @@ jobs:
           URL: ${{ steps.deployment.outputs.page_url }}
         run: |
           {
-            echo "## Générique de fin : CD"
+            echo "## Rapport CD"
             echo ""
             if [ "$DEPLOY" = "success" ]; then
-              echo "OK **Rambo** a déployé le site : $URL"
+              echo "Mission accomplie - l'application est déployée : $URL"
             else
-              echo "FAILED **Rambo** n'a pas pu déployer le site."
+              echo "Mayday! Mayday! Impossible de déployer l'application."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Envoyer l'email
-        if: always() && env.MAIL_PASSWORD != ''
+        if: ${{ env.MAIL_PASSWORD != '' }}
         uses: dawidd6/action-send-mail@v6
         with:
           server_address: smtp.gmail.com
