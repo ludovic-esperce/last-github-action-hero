@@ -60,7 +60,7 @@ jobs:
           retention-days: 3
 
       # Générique de fin : résumé affiché sur la page du run
-      - name: Rapport de CI
+      - name: Rapport CI
         if: always()
         env: # Déclaration de plusieurs variables réutilisables
           LINT: ${{ steps.lint.outcome }}
@@ -100,5 +100,73 @@ jobs:
             Branche  : ${{ github.ref_name }}
             Commit   : ${{ github.sha }}
             Auteur   : ${{ github.actor }}
+
+            Détails : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  # Déploiement sur GitHub Pages, uniquement si la CI est OKAY
+  # L'application n'est pas rebuild : on récupère celle de la CI
+  deploy:
+    # if: >-
+    #   github.event.workflow_run.conclusion == 'success' &&
+    #   contains(fromJSON('["push","workflow_dispatch"]'), github.event.workflow_run.event)
+    needs : ci
+    if: github.event_name != 'pull_request' && github.ref = 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Rapport CD
+        if: always()
+        env:
+          DEPLOY: ${{ steps.deployment.outcome }}
+          URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          {
+            echo "## Générique de fin : CD"
+            echo ""
+            if [ "$DEPLOY" = "success" ]; then
+              echo "OK **Rambo** a déployé le site : $URL"
+            else
+              echo "FAILED **Rambo** n'a pas pu déployer le site."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Envoyer l'email
+        if: always() && env.MAIL_PASSWORD != ''
+        uses: dawidd6/action-send-mail@v6
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: "Last GitHub Action Hero <${{ secrets.MAIL_USERNAME }}>"
+          subject: "CD ${{ job.status }} : ${{ github.repository }}"
+          body: |
+            Le déploiement de ${{ github.repository }} est terminé.
+
+            Résultat : ${{ job.status }}
+            Site     : ${{ steps.deployment.outputs.page_url }}
 
             Détails : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
