@@ -25,6 +25,15 @@ jobs:
           cache: npm
       - run: npm ci
 
+      - id: Debug
+        name: Debug variables d'environnement
+        run: |
+          if [ -n "$MAIL_PASSWORD" ]; then
+            echo "MAIL_PASSWORD : OK (non vide)"
+          else
+            echo "MAIL_PASSWORD : VIDE"
+          fi
+
       # Die Hard : vérification statique
       - id: lint
         name: Die Hard - Vérification statique - Lint
