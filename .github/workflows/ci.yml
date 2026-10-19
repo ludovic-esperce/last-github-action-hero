@@ -88,7 +88,7 @@ jobs:
         with:
           server_address: smtp.mailgun.org
           server_port: 587
-          secure: true
+          # secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           to: ${{ secrets.MAIL_TO }}
