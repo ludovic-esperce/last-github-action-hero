@@ -25,6 +25,6 @@ describe('heroRank', () => {
     expect(heroRank(0, 5)).toBe('Spectateur');
     expect(heroRank(1, 5)).toBe('Figurant');
     expect(heroRank(3, 5)).toBe('Cascadeur');
-    expect(heroRank(5, 5)).toBe('Last Action Hero');
+    expect(heroRank(5, 5)).toBe('Last Github Action Hero');
   });
 });
