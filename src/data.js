@@ -1,9 +1,9 @@
 export const STAGES = [
-  { id: 'build', codename: 'Commando', label: 'Build', text: 'Vite compile le site en fichiers statiques. Sans build, pas de film.' },
+  { id: 'build', codename: 'Commando', label: 'Build', text: 'Vite compile le site en fichiers statiques. Sans build, pas d\'action.' },
   { id: 'test', codename: 'Terminator', label: 'Tests unitaires', text: 'Vitest vérifie chaque fonction. Il ne négocie pas et ne s’arrête pas.' },
   { id: 'lint', codename: 'Die Hard', label: 'Vérification statique', text: 'ESLint traque les erreurs avant qu’elles n’explosent en production.' },
-  { id: 'deploy', codename: 'Rambo', label: 'Déploiement', text: 'Le site part sur GitHub Pages, seul et sans renfort.' },
-  { id: 'credits', codename: 'Générique', label: 'Résumé de fin', text: 'Un récapitulatif façon générique s’affiche sur la page du run.' },
+  { id: 'deploy', codename: 'Rambo', label: 'Déploiement', text: 'Le site se déploie sur GitHub Pages, seul et sans renfort.' },
+  { id: 'report', codename: 'Rapport', label: 'Résumé de fin', text: 'C\'était pas ma guerre... Voilà mon rapport par email, Colonel.' },
 ];
 
 export const CONCEPTS = [

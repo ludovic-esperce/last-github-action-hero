@@ -1,6 +1,5 @@
-# Last GitHub Action Hero
-
 ![Logo Last Gihub Action Hero](git-assets/last-github-action-hero.svg)
+
 Atelier de découverte de GitHub Actions.
 
 ## Pipeline
@@ -10,8 +9,7 @@ Le pipeline CI est organisé pour :
 2. effectuer la vérification statique (lint)
 3. effectuer les tests unitaires
 4. construire le projet
-5. effectuer un rapport
-6. envoie un email
+5. crée un rapport
 
 Le pipeline CD (qui prend le relais) :
 1. déploiement de l'application Web en "Gihub Page"
