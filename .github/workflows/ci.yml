@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   # Un JOB se déroule sur une machine spécifique
-  # Les étapes partagent le même disque 
+  # Les étapes partagent le même disque
   ci: # Nom du job
     runs-on: ubuntu-26.04 # Machine "ubuntu" fournie par Github
     env: # Paramétrage des informations pour envoie d'email
@@ -71,13 +71,13 @@ jobs:
             echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # Email de fin de build (ignoré si les secrets Gmail ne sont pas configurés)
+      # Email de fin de build (ignoré si les secrets ne sont pas configurés)
       - name: Envoyer l'email
-        if: always() && env.MAIL_PASSWORD != ''
+        if: env.MAIL_PASSWORD != ''
         uses: dawidd6/action-send-mail@v6
         with:
-          server_address: smtp.gmail.com
-          server_port: 465
+          server_address: smtp.mailgun.org
+          server_port: 587
           secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
