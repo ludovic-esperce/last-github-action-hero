@@ -3,7 +3,7 @@ name: CD - Déploie malgré l'adversité
 # Se déclenche automatiquement quand le workflow "CI" se termine sur main
 on:
   workflow_run:
-    workflows: [CI]
+    workflows: [ CI - Test, build, report]
     types: [completed]
     branches: [main]
 

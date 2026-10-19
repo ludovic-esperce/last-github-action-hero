@@ -1,4 +1,4 @@
-name: CI - Test, build, report, overcome
+name: CI - Test, build, report
 
 # Trigger : l'événement qui déclenche le pipeline
 on:
@@ -60,28 +60,28 @@ jobs:
           retention-days: 3
 
       # Générique de fin : résumé affiché sur la page du run
-      - name: Générique de fin
+      - name: Rapport de CI
         if: always()
-        env:
+        env: # Déclaration de plusieurs variables réutilisables
           LINT: ${{ steps.lint.outcome }}
           TEST: ${{ steps.test.outcome }}
           BUILD: ${{ steps.build.outcome }}
         run: |
           icon() { case "$1" in success) echo "OK";; skipped) echo "Continue";; *) echo "Failed";; esac; }
           {
-            echo "## Générique de fin : CI"
+            echo "## Rapport : CI"
             echo ""
-            echo "| Rôle | Mission | Résultat |"
-            echo "|---|---|---|"
-            echo "| Die Hard | Vérification statique | $(icon "$LINT") |"
-            echo "| Terminator | Tests unitaires | $(icon "$TEST") |"
-            echo "| Commando | Build | $(icon "$BUILD") |"
+            echo "| Étape | Résultat |"
+            echo "|---|---|"
+            echo "| Vérification statique | $(icon "$LINT") |"
+            echo "| Tests unitaires | $(icon "$TEST") |"
+            echo "| Build | $(icon "$BUILD") |"
             echo ""
             echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Email de fin de build (ignoré si les secrets ne sont pas configurés)
-      - name: Envoyer l'email
+      - name: Envoyer l'email contenant le rapport
         if: ${{ env.MAIL_PASSWORD != '' }}
         uses: dawidd6/action-send-mail@v6
         with:
