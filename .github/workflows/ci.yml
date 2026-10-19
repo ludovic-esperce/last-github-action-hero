@@ -73,7 +73,7 @@ jobs:
 
       # Email de fin de build (ignoré si les secrets ne sont pas configurés)
       - name: Envoyer l'email
-        if: ${{ secrets.MAIL_PASSWORD != '' }}
+        if: ${{ env.MAIL_PASSWORD != '' }}
         uses: dawidd6/action-send-mail@v6
         with:
           server_address: smtp.mailgun.org
