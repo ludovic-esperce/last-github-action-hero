@@ -30,3 +30,15 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 - `MAIL_USERNAME` : nom de l'utilisateur utilisé pour l'envoi d'email
 - `MAIL_PASSWORD` : mot de passe utilisé pour l'envoi
 - `MAIL_TO` : adresse email du destinataire
+
+## Déploiement
+
+Pour que le déploiement puisse se faire il faut veiller à activer les `Github Pages` pour le dépôt :
+
+![Activation Github pages](git-assets/todo/activate-github-page.gif)
+
+Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pages`](https://github.com/marketplace/actions/deploy-github-pages-site) en effectuant un téléchargement de `l'artefact`.
+
+Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
+
+![Gif course après déploiement](git-assets/die-hard-3.gif)
