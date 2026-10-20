@@ -88,7 +88,7 @@ jobs:
             echo "| Upload artifact | $ARTIFACT_UPLOAD |"
             echo ""
             echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
-          } >> "$GHITHUB_STEP_SUMMARY"
+          } >> "$GITHUB_STEP_SUMMARY"
   # L'application n'est pas rebuild : on récupère celle de la CI
   cd:
     needs : ci # Dépendance avec CI
@@ -120,7 +120,7 @@ jobs:
             else
               echo "Mayday! Mayday! Impossible de déployer l'application."
             fi
-          } >> "$GHITHUB_STEP_SUMMARY"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Rapport par email
         if: always() && env.MAIL_PASSWORD != ''
