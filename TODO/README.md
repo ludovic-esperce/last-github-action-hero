@@ -137,9 +137,16 @@ L'artifact est déposé par la première partie du workflow avec l'action [`uplo
       path: dist
 ```
 
+Si cette étape est bien ajoutée à la partie CI, vous pouvez ajouter l'étape de déploiement :
+```yml
+  - id: deployment # Déploiement automatique de l'artefact github-pages
+    name: Rambo - déploiement derrière les lignes ennemies
+    uses: actions/deploy-pages@v4
+```
+
 Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
 
-![Gif course après déploiement](git-assets/die-hard-3.gif)
+![Extrait Die Hard - course après déploiement](git-assets/die-hard-3.gif)
 
 ### This is the end : envoi d'email en fin de workflow
 
@@ -160,3 +167,4 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 
 Github génère automatiquement un [badge d'état de flux de travail](https://docs.github.com/fr/actions/how-tos/monitor-workflows/add-a-status-badge) utilisable.
 
+Il est possible d'ajouter le code de ce badge d'état à votre `README.md` de dépôt.
