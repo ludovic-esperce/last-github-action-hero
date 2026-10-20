@@ -8,7 +8,7 @@ Chaque exercice peut se faire de deux façons :
 
 ## Partie 1 : intégration continue
 
-### Die Hard, bienvenue à la fête camarade : déclenche le linter
+### Die Hard, bienvenue à la fête camarade -> déclenche le linter
 
 La veille de Noël, tout semble calme... Tout ? C'est sans compter les variables infiltrées (et non utilisées) dans le code.
 
@@ -19,7 +19,7 @@ Sur le projet fourni l'analyseur peut être appelé avec la commande :
 npm run lint
 ```
 
-Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante (bien faire atteniton à l'indentation) :
+Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante (bien faire attention à l'indentation) :
 ```yml
   - id: lint
     name: Die Hard - Vérification statique - Lint
@@ -31,6 +31,8 @@ La commande `run` d'une étape permet de déclencher un commande dans le `shell`
 Une fois l'étape ajoutée, étudiez le résumé du workflow pour corriger le code.
 
 Vous pourrez accéder au résumé comme suit :
+
+![Accès au résumé d'un workflow](git-assets/access-summary.gif)
 
 > [!IMPORTANT]
 > Si une étape du workflow échoue un **flag d'échec** passe à `true`.
@@ -47,7 +49,7 @@ Vous pourrez accéder au résumé comme suit :
 >    run: npm run lint
 > ```
 
-### Terminator, "Sarah Connor?" : casse un test
+### Terminator, "Sarah Connor?" -> casse un test
 
 Un test unitaire a été cassé et la plus brilliante des intelligences artificielles, "Govenator", est là pour empêcher le workflow de progresser.
 
@@ -64,28 +66,9 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
     run: npm test
 ```
 
-always()
-      env: # Déclaration de plusieurs variables réutilisables
-        LINT: ${{ steps.lint.outcome }}
-        TEST: ${{ steps.test.outcome }}
-        BUILD: ${{ steps.build.outcome }}
-        ARTIFACT_UPLOAD: ${{ steps.artifact.outcome }}
-      run: |
-        {
-          echo "## Rapport : CI"
-          echo ""
-          echo "| Étape | Résultat |"
-          echo "|---|---|"
-          echo "| Vérification statique | $LINT |"
-          echo "| Tests unitaires | $TEST |"
-          echo "| Build | $BUILD |"
-          echo "| Upload artifact | $ARTIFACT_UPLOAD |"
-          echo ""
-          echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
-        } >> "$GITHUB_STEP_SUMMARY"
-Avec l'aide du retour d'erreur, corrigez le code du fichier `src/lib.test.js`.
+Avec l'aide du résumé d'erreur, corrigez le code du fichier `src/lib.test.js`.
 
-### Rapport 1ère mission
+### Résumé 1ère mission -> Github Markdown
 
 Il est possible d'ajouter des rapports qui seront intégrés aux résumé Github.
 
@@ -116,11 +99,16 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
     } >> "$GITHUB_STEP_SUMMARY"
 ```
 
+> [!TIP]
+> Le pipe `|` permet de regrouper plusieurs lignes de `run` dans un même script.
+>
+> Les accolades `{}` indique que tout ce qui est affiché sur la sortie standard avec "écho" doit être redirigé dans la variable **$GITHUB_STEP_SUMMARY**.
+
 ---
 
 ## Partie 2 : déploiement continu
 
-### Rambo, derrière les lignes ennemies : déploiement
+### Rambo, derrière les lignes ennemies -> déploiement Github Page
 
 Pour que le déploiement puisse se faire il faut veiller à activer les `Github Pages` pour le dépôt :
 
@@ -148,11 +136,61 @@ Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
 
 ![Extrait Die Hard - course après déploiement](git-assets/die-hard-3.gif)
 
-### This is the end : envoi d'email en fin de workflow
 
-L'envoi d'email peut s'effectuer en utilisant un serveru `SMTP`, dans cet exemple est utilisé [`mailgun`](https://app.mailgun.com).
+### Résumé 2ème mission -> Github Markdown
 
-Afin que l'action Github puisse se connecter au serveur il faudra ajouter des `secrets` :
+Comme pour le résumé **Markdown** de la partie CI, ajoutez un résumé tel que :
+```yml
+  - name: Résumé Github pour CD
+    if: always()
+    env:
+      DEPLOY: ${{ steps.deployment.outcome }}
+      URL: ${{ steps.deployment.outputs.page_url }}
+    run: |
+      {
+        echo "## Rapport CD"
+        echo ""
+        if [ "$DEPLOY" = "success" ]; then
+          echo "Mission accomplie ! l'application est déployée : $URL"
+        else
+          echo "Mayday! Mayday! Impossible de déployer l'application."
+        fi
+      } >> "$GITHUB_STEP_SUMMARY"
+```
+
+### This is the end -> envoi d'email en fin de workflow
+
+L'envoi d'email peut s'effectuer en utilisant un serveeur `SMTP`, dans cet exemple est utilisé [`mailgun`](https://app.mailgun.com). Les informations de connexion vous seront fournies afin que votre pipeline puisse s'y connecter.
+
+Plusieurs actions permettent d'envoyer des email, c'est le cas de [`send amil`](https://github.com/marketplace/actions/send-email).
+
+```yml
+  - name: Rapport par email
+    if: always() && env.MAIL_PASSWORD != ''
+    uses: dawidd6/action-send-mail@v6
+    with:
+      server_address: smtp.mailgun.org
+      server_port: 587
+      username: ${{ secrets.MAIL_USERNAME }}
+      password: ${{ secrets.MAIL_PASSWORD }}
+      to: ${{ secrets.MAIL_TO }}
+      from: "Last GitHub Action Hero <${{ secrets.MAIL_USERNAME }}>"
+      subject: "CD ${{ job.status }} : ${{ github.repository }}"
+      body: |
+        Rapport N°${{ github.run_id }}
+
+        Le déploiement de ${{ github.repository }} est terminé.
+
+        Résultat : ${{ job.status }}
+        Site     : ${{ steps.deployment.outputs.page_url }}
+        Branche  : ${{ github.ref_name }}
+        Commit   : ${{ github.sha }}
+        Auteur   : ${{ github.actor }}
+
+        Détails : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+```
+
+Afin que l'action Github puisse se connecter au serveur il faudra ajouter des `secrets` utilisable dans le workflow :
 
 ![Ajout de secrets Github](git-assets/add-github-repository-secret.gif)
 
@@ -161,10 +199,12 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 - `MAIL_PASSWORD` : mot de passe utilisé pour l'envoi
 - `MAIL_TO` : adresse email du destinataire
 
-### Rapport 2ème mission
-
 ### Décoration pour service rendu : badge Github
 
 Github génère automatiquement un [badge d'état de flux de travail](https://docs.github.com/fr/actions/how-tos/monitor-workflows/add-a-status-badge) utilisable.
 
 Il est possible d'ajouter le code de ce badge d'état à votre `README.md` de dépôt.
+
+Le code permettant de le faire vous est fourni sur la page d'un workflow spécifique :
+
+![Chemin vers le code Markdown d'un badge](./git-assets/badge-url.gif)
