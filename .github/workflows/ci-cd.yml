@@ -61,27 +61,31 @@ jobs:
 
       # Le site construit est ajouté à un aterfact github-pages
       # Plus d'informations sur les paramètres : https://github.com/actions/upload-pages-artifact#inputs-
-      - uses: actions/upload-pages-artifact@v4
+      - id: artifact
+        name: Création d'artefact "github-pages"
+        uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
       # Au rapport : résumé affiché sur la page du run
+      # Plus d'information ici : https://oneuptime.com/blog/post/2026-01-30-github-actions-step-summary/view
       - name: Rapport CI
         if: always()
         env: # Déclaration de plusieurs variables réutilisables
           LINT: ${{ steps.lint.outcome }}
           TEST: ${{ steps.test.outcome }}
           BUILD: ${{ steps.build.outcome }}
+          ARTIFACT_UPLOAD: ${{ steps.artifact.outcome }}
         run: |
-          icon() { case "$1" in success) echo "OK";; skipped) echo "Continue";; *) echo "Failed";; esac; }
           {
             echo "## Rapport : CI"
             echo ""
             echo "| Étape | Résultat |"
             echo "|---|---|"
-            echo "| Vérification statique | $(icon "$LINT") |"
-            echo "| Tests unitaires | $(icon "$TEST") |"
-            echo "| Build | $(icon "$BUILD") |"
+            echo "| Vérification statique | $LINT |"
+            echo "| Tests unitaires | $TEST |"
+            echo "| Build | $BUILD |"
+            echo "| Upload artifact | $ARTIFACT_UPLOAD |"
             echo ""
             echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -100,7 +104,7 @@ jobs:
     environment:
       name: github-pages # récupération des variables d'environnement "github pages"
       url: ${{ steps.deployment.outputs.page_url }}
-    env:
+    env: # chargement d'un secret contenant le 
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
       - name: Rambo - déploiement derrière les lignes ennemies
@@ -124,7 +128,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Envoi du rapport
-        if: ${{ env.MAIL_PASSWORD != '' }}
+        if: env.MAIL_PASSWORD != ''
         env:
           CODENAME: ${{ env.codename }}
         uses: dawidd6/action-send-mail@v6
@@ -139,7 +143,7 @@ jobs:
           body: |
             Rapport N°${{ github.run_id }}
 
-            Nom de code de l'agent : $HERO
+            Nom de code de l'agent : $CODENAME
 
             Le déploiement de ${{ github.repository }} est terminé.
 
