@@ -128,9 +128,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Envoi du rapport
-        if: env.MAIL_PASSWORD != ''
-        env:
-          CODENAME: ${{ env.codename }}
+        if: always() && env.MAIL_PASSWORD != ''
         uses: dawidd6/action-send-mail@v6
         with:
           server_address: smtp.mailgun.org
@@ -143,7 +141,7 @@ jobs:
           body: |
             Rapport N°${{ github.run_id }}
 
-            Nom de code de l$HERO'agent : ${{ $CODENAME }}
+            Nom de code de l'agent : ${{ env.codename }}
 
             Le déploiement de ${{ github.repository }} est terminé.
 
