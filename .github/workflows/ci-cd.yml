@@ -57,7 +57,7 @@ jobs:
       # Plus d'informations sur les paramètres : https://github.com/actions/upload-pages-artifact#inputs-
       - uses: actions/upload-pages-artifact@v4
         with:
-          name: site
+          # name: site
           path: dist
 
       # Générique de fin : résumé affiché sur la page du run
