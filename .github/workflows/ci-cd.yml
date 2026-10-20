@@ -18,13 +18,14 @@ jobs:
     env: # Paramétrage de variables d'environnement utilisables dans le workflow
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }} # On récupère les secrets Github
     steps:
-      - uses: actions/checkout@v4 # Récupération du code
-      - uses: actions/setup-node@v4 # Configuration de NodeJS
+      - uses: actions/checkout@v7 # Récupération du code
+      - uses: actions/setup-node@v7 # Configuration de NodeJS
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
 
+      # Étape uniquement présente pour vérifier le contenu des variables d'environnement
       - id: Debug
         name: Debug variables d'environnement
         run: |
@@ -41,7 +42,7 @@ jobs:
 
       # Terminator : tests unitaires
       - id: test
-        name: Tests unitaires
+        name: Terminator - Tests unitaires
         if: ${{ !cancelled() }}
         run: npm test
 
@@ -53,6 +54,7 @@ jobs:
           VITE_COMMIT: ${{ github.sha }}
 
       # Le site construit est ajouté à un aterfact github-pages
+      # Plus d'informations sur les paramètres : https://github.com/actions/upload-pages-artifact#inputs-
       - uses: actions/upload-pages-artifact@v4
         with:
           name: site
@@ -107,19 +109,20 @@ jobs:
   deploy:
     needs : ci # Dépendance avec CI
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       actions: read
-      pages: write
-      id-token: write
+      pages: write # permet d'écrire pour déployer une "Github page"
+      id-token: write # permet de vérifier si le déploiement vient d'une source légitime
     environment:
-      name: github-pages
+      name: github-pages # récupération des variables d'environnement "github pages"
       url: ${{ steps.deployment.outputs.page_url }}
     env:
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
-      - id: deployment # Déploiement automatique de l'artefact github-pages
+      - name: Rambo - déploiement derrière les lignes ennemies
+        id: deployment # Déploiement automatique de l'artefact github-pages
         uses: actions/deploy-pages@v4
 
       - name: Rapport CD
@@ -132,7 +135,7 @@ jobs:
             echo "## Rapport CD"
             echo ""
             if [ "$DEPLOY" = "success" ]; then
-              echo "Mission accomplie - l'application est déployée : $URL"
+              echo "Mission accomplie ! l'application est déployée : $URL"
             else
               echo "Mayday! Mayday! Impossible de déployer l'application."
             fi
