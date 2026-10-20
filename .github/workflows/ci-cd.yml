@@ -62,14 +62,14 @@ jobs:
       # Le site construit est ajouté à un aterfact github-pages
       # Plus d'informations sur les paramètres : https://github.com/actions/upload-pages-artifact#inputs-
       - id: artifact
-        name: Création d'artefact "github-pages"
+        name: Création d'artefact
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
       # Au rapport : résumé affiché sur la page du run
       # Plus d'information ici : https://oneuptime.com/blog/post/2026-01-30-github-actions-step-summary/view
-      - name: Rapport CI
+      - name: Résumé Github pour CI
         if: always()
         env: # Déclaration de plusieurs variables réutilisables
           LINT: ${{ steps.lint.outcome }}
@@ -88,9 +88,7 @@ jobs:
             echo "| Upload artifact | $ARTIFACT_UPLOAD |"
             echo ""
             echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-  # Déploiement sur GitHub Pages, uniquement si la CI est OKAY
+          } 
   # L'application n'est pas rebuild : on récupère celle de la CI
   cd:
     needs : ci # Dépendance avec CI
@@ -98,9 +96,8 @@ jobs:
     runs-on: ubuntu-26.04
     permissions:
       contents: read
-      actions: read
       pages: write # permet d'écrire pour déployer une "Github page"
-      id-token: write # p$HEROermet de vérifier si le déploiement vient d'une source légitime
+      id-token: write # permet de vérifier si le déploiement vient d'une source légitime
     environment:
       name: github-pages # récupération des variables d'environnement "github pages"
       url: ${{ steps.deployment.outputs.page_url }}
@@ -111,7 +108,7 @@ jobs:
         id: deployment # Déploiement automatique de l'artefact github-pages
         uses: actions/deploy-pages@v4
 
-      - name: Rapport CD
+      - name: Résumé Github pour CD
         if: always()
         env:
           DEPLOY: ${{ steps.deployment.outcome }}
@@ -125,11 +122,12 @@ jobs:
             else
               echo "Mayday! Mayday! Impossible de déployer l'application."
             fi
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Envoi du rapport
+          }
+      - name: Rapport par email
         if: always() && env.MAIL_PASSWORD != ''
         uses: dawidd6/action-send-mail@v6
+        env: # Paramétrage d'une variable d'environnement utilisable dans l'email
+          codename: ${{ inputs.codename || 'The True Last Github Action Hero' }}
         with:
           server_address: smtp.mailgun.org
           server_port: 587
