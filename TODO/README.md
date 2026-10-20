@@ -6,7 +6,48 @@ Chaque exercice peut se faire de deux façons :
 - en modifiant le repo puis en faisant un `git push`
 - en éditant directement les fichiers sur `Github`
 
+![Let's party](git-assets/lets-party.gif)
+
 ## Partie 1 : intégration continue
+
+### Briefing -> mise en place du workflow
+
+Le code de mise en place du workflow est fourni, voici un descriptif de sa structuration :
+```yml
+# Nom du workflow
+name: CI & CD (Bon cop, bad cop)
+
+# Trigger : l'événement qui déclenche le pipeline
+on:
+  push: # Type de l'action
+    branches: [main] # Branche concernée
+  pull_request:
+  workflow_dispatch: # permet le lancement du workflow manuel
+
+permissions: # règle les permissions du WORKFLOW en lecture seule
+  contents: read # un jeton temporaire GITHUB_TOKEN est créé et utilisé avec ces droits
+
+# Début de la liste des jobs
+jobs:
+  # To be continued...
+```
+
+### Choix de l'équipement -> mise en place de l'environnement de build
+
+Lors de la déclaration d'un "job" et avant la déclaration il faut préciser son `runner`.
+
+Le `runner` est un conteneur fourni par Github, voici le code pour utiliser un conteneur `Ubuntu` en version `26.04` : 
+```yml
+jobs:
+  # Un JOB se déroule sur une machine spécifique
+  # Les étapes partagent le même disque
+  ci: # Nom du job
+    runs-on: ubuntu-26.04 # Machine "ubuntu" fournie par Github
+    steps:
+      - # ...to be continued...
+```
+
+![Gif "My favorite"](./git-assets/my-favorite.gif)
 
 ### Die Hard, bienvenue à la fête camarade -> déclenche le linter
 
@@ -30,7 +71,7 @@ La commande `run` d'une étape permet de déclencher un commande dans le `shell`
 
 Une fois l'étape ajoutée, étudiez le résumé du workflow pour corriger le code.
 
-Vous pourrez accéder au résumé comme suit :
+Vous pourrez accéder au résumé d'un workflow comme suit :
 
 ![Accès au résumé d'un workflow](git-assets/access-summary.gif)
 
@@ -71,6 +112,8 @@ Avec l'aide du résumé d'erreur, corrigez le code du fichier `src/lib.test.js`.
 ### Résumé 1ère mission -> Github Markdown
 
 Il est possible d'ajouter des rapports qui seront intégrés aux résumé Github.
+
+![Gif - What do you wanna hear](./git-assets/what-do-you-wanna-hear.gif)
 
 Ceci peut-être fait en écrivant du **Markdown** dans la variable `$GITHUB_STEP_SUMMARY` dans un `run` du runner.
 
@@ -198,6 +241,8 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 - `MAIL_USERNAME` : nom de l'utilisateur utilisé pour l'envoi d'email
 - `MAIL_PASSWORD` : mot de passe utilisé pour l'envoi
 - `MAIL_TO` : adresse email du destinataire
+
+![Gif multipass](./git-assets/multipass.gif)
 
 ### Décoration pour service rendu : badge Github
 
