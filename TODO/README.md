@@ -113,6 +113,8 @@ Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
 
 Avec l'aide du résumé d'erreur, corrigez le code du fichier `src/lib.test.js`.
 
+![Gif extrait Terminator 1 "Sarah Connor" ?](./git-assets/sarah-connor.gif)
+
 ### Résumé 1ère mission -> Github Markdown
 
 Il est possible d'ajouter des rapports qui seront intégrés aux résumé Github.
