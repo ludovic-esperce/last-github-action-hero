@@ -2,9 +2,13 @@
 
 ## Marche à suivre
 
-Chaque exercice peut se faire de deux façons :
+Chaque ajout de code au workflow ou de modification du projet peut se faire de deux façons :
 - en modifiant le repo puis en faisant un `git push`
 - en éditant directement les fichiers sur `Github`
+
+Des informations pour faire évoluer le workflow vous seront données au fur et à mesure de la prise en main.
+
+Vous pourrez prendre connaissance des "TODO" du workflow initialement fourni, ils font référence aux différentes parties détaillées ci-après.
 
 ![Let's party](git-assets/lets-party.gif)
 
@@ -179,7 +183,6 @@ Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
 
 ![Extrait Die Hard - course après déploiement](git-assets/die-hard-3.gif)
 
-
 ### Résumé 2ème mission -> Github Markdown
 
 Comme pour le résumé **Markdown** de la partie CI, ajoutez un résumé tel que :
@@ -249,7 +252,7 @@ Il faudra ajouter 3 secrets utilisés par le workflow :
 Github génère automatiquement un [badge d'état de flux de travail](https://docs.github.com/fr/actions/how-tos/monitor-workflows/add-a-status-badge) utilisable.
 
 Il est possible d'ajouter le code de ce badge d'état à votre `README.md` de dépôt.
-
+rambo mission accomplished
 Le code permettant de le faire vous est fourni sur la page d'un workflow spécifique :
 
 ![Chemin vers le code Markdown d'un badge](./git-assets/badge-url.gif)
