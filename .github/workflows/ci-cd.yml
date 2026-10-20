@@ -88,7 +88,7 @@ jobs:
             echo "| Upload artifact | $ARTIFACT_UPLOAD |"
             echo ""
             echo "_Réalisé par ${{ github.actor }} · commit \`${GITHUB_SHA::7}\`_"
-          } 
+          } >> "$GHITHUB_STEP_SUMMARY"
   # L'application n'est pas rebuild : on récupère celle de la CI
   cd:
     needs : ci # Dépendance avec CI
@@ -101,11 +101,9 @@ jobs:
     environment:
       name: github-pages # récupération des variables d'environnement "github pages"
       url: ${{ steps.deployment.outputs.page_url }}
-    env: # chargement d'un secret contenant le 
-      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
     steps:
-      - name: Rambo - déploiement derrière les lignes ennemies
-        id: deployment # Déploiement automatique de l'artefact github-pages
+      - id: deployment # Déploiement automatique de l'artefact github-pages
+        name: Rambo - déploiement derrière les lignes ennemies
         uses: actions/deploy-pages@v4
 
       - name: Résumé Github pour CD
@@ -122,7 +120,8 @@ jobs:
             else
               echo "Mayday! Mayday! Impossible de déployer l'application."
             fi
-          }
+          } >> "$GHITHUB_STEP_SUMMARY"
+
       - name: Rapport par email
         if: always() && env.MAIL_PASSWORD != ''
         uses: dawidd6/action-send-mail@v6

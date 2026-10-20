@@ -91,6 +91,8 @@ Il est possible d'ajouter des rapports qui seront intégrés aux résumé Github
 
 Ceci peut-être fait en écrivant du **Markdown** dans la variable `$GITHUB_STEP_SUMMARY` dans un `run` du runner.
 
+Dans le workflow Github, ajoutez à l'endroit indiqué l'étape suivante :
+
 ```yml
 - name: Rapport CI
   if: always()
@@ -124,7 +126,16 @@ Pour que le déploiement puisse se faire il faut veiller à activer les `Github 
 
 ![Activation Github pages](git-assets/activate-github-page.gif)
 
-Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pages`](https://github.com/marketplace/actions/deploy-github-pages-site) en effectuant un téléchargement de `l'artefact`.
+Une fois l'activation effectuée il est possible d'utiliser l'action [`deploy-pages`](https://github.com/marketplace/actions/deploy-github-pages-site) en effectuant un téléchargement de `l'artefact` dispnible et créé par la première partie du workflow.
+
+L'artifact est déposé par la première partie du workflow avec l'action [`upload-pages-artifact`](https://github.com/actions/upload-pages-artifact) :
+```yml
+  - id: artifact
+    name: Création d'artefact
+    uses: actions/upload-pages-artifact@v4
+    with:
+      path: dist
+```
 
 Un fois le déploiement effectué, vous savez ce qu'il vous reste à faire :
 
