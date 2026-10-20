@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTimecode, heroRank, pipelineProgress } from './lib.js';
+import { formatTimecode, heroRank, pipelineProgress, isSarahConnor } from './lib.js';
 
 describe('formatTimecode', () => {
   it('formate les secondes en HH:MM:SS', () => {
@@ -26,5 +26,12 @@ describe('heroRank', () => {
     expect(heroRank(1, 5)).toBe('Figurant');
     expect(heroRank(3, 5)).toBe('Cascadeur');
     expect(heroRank(5, 5)).toBe('Last Github Action Hero');
+  });
+});
+
+describe('isSarahConnor', () => {
+  it('vérifie s\'il s\'agit bien de Sarah Connor', () => {
+    expect(isSarahConnor("Sophia Conrad")).toBe(false);
+    expect(isSarahConnor("Sarah Connor")).toBe(true);
   });
 });

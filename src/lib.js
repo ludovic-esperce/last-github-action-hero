@@ -37,3 +37,16 @@ export function heroRank(done, total) {
 
   return 'Spectateur';
 }
+
+/**
+* Vérifie s'il s'agit bien de Sarah Connor, histoire d'être sûr.
+*
+* Retourne "True" si le nom passé en paramètre est "Sarah Connor"
+*/
+export function isSarahConnor(nameToCheck) {
+  if (nameToCheck === "Sarah Connor") {
+    return true;
+  } else {
+    return false;
+  }
+}
