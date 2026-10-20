@@ -3,10 +3,12 @@
 [![CI & CD (Bon cop, bad cop)](https://github.com/ludovic-esperce/last-github-action-hero/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/ludovic-esperce/last-github-action-hero/actions/workflows/ci-cd.yml)
 
 Atelier de découverte de GitHub Actions.
+
+
 Devenez le true **LAST GITHUB ACTION HERO!** Yippee kikay!
 
 <p align="center">
-  <img src="/ludovic-esperce/last-github-action-hero/raw/main/git-assets/awesome-action.gif" alt="Gif Awesome Action" />
+  <img src="https://raw.githubusercontent.com/ludovic-esperce/last-github-action-hero/refs/heads/main/git-assets/awesome-action.gif" alt="Gif Awesome Action" />
 </p>
 
 ## Le workflow
@@ -47,4 +49,5 @@ npm run lint    # vérification statique
 
 > [!NOTE]
 > **Disclaimer** : le sujet de cet atelier n'a, en aucun cas, été choisi pour encenser une masculinité héroïquement testostéronée des films d'actions de années 80-90.
+>
 > Tout est né d'un jeu de mot discutable.
